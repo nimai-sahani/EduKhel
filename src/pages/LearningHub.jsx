@@ -1,121 +1,106 @@
-// src/pages/LearningHub.jsx
 import { motion } from "framer-motion";
+import MiniGameCard from "@/components/game/MiniGameCard";
+import ProgressBar from "@/components/ui/ProgressBar";
+import BadgePopUp from "@/components/ui/BadgePopUp";
+import useProgress from "@/hooks/useProgress";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import '../i18n'; // make sure path is correct
 
 export default function LearningHub() {
+  const { t } = useTranslation(); // hook initialization
+
   const lessons = [
     {
-      title: "English Grammar Basics - Dear Sir",
-      video: "https://www.youtube.com/embed/UuGpm01SPcA",
-      pdf: "/materials/english-grammar.pdf",
-      game: "Mini Quiz: Identify Parts of Speech",
+      id: 1,
+      title: t('maths_real_life'),
+      video: "https://www.youtube.com/watch?v=cCyKFCHQaJ8",
+      pdf: "/materials/maths-real-life.pdf",
+      game: t('maths_puzzle'),
     },
     {
-      title: "Tenses Made Easy - Dear Sir",
-      video: "https://www.youtube.com/embed/2pVQYtI0a1E",
-      pdf: "/materials/tenses-notes.pdf",
-      game: "Mini Quiz: Tense Practice",
+      id: 2,
+      title: t('time_speed_distance'),
+      video: "https://www.youtube.com/watch?v=oMwAHfqsQLo",
+      pdf: "/materials/time-speed-distance.pdf",
+      game: t('speed_challenge'),
     },
     {
-      title: "Maths Tricks for Exams",
-      video: "https://www.youtube.com/embed/kbZs9pXdH7E",
-      pdf: "/materials/maths-shortcuts.pdf",
-      game: "Puzzle: Solve Maths Tricks",
+      id: 3,
+      title: t('olympiad_math'),
+      video: "https://www.youtube.com/watch?v=5z52fxHzg1E",
+      pdf: "/materials/olympiad-maths.pdf",
+      game: t('olympiad_quiz'),
     },
   ];
 
-  const [completed, setCompleted] = useState(
-    Array(lessons.length).fill({ video: false, pdf: false, game: false })
-  );
+  const { progress, completeLesson } = useProgress(lessons);
+  const [badge, setBadge] = useState({ show: false, name: "" });
 
-  const handleComplete = (lessonIdx, type) => {
-    const newCompleted = [...completed];
-    newCompleted[lessonIdx] = { ...newCompleted[lessonIdx], [type]: true };
-    setCompleted(newCompleted);
+  const handleCompleteLesson = (lessonId, lessonName) => {
+    completeLesson(lessonId);
+    setBadge({ show: true, name: `${lessonName} ${t('badge')}` });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-700 to-purple-900 text-white px-6 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 text-white px-6 py-12">
+      {/* Badge PopUp */}
+      <BadgePopUp
+        show={badge.show}
+        badgeName={badge.name}
+        onClose={() => setBadge({ show: false, name: "" })}
+      />
+
+      {/* Main Heading */}
       <motion.h1
-        className="text-4xl font-extrabold text-center mb-8"
+        className="text-5xl font-extrabold text-center mb-12 drop-shadow-lg"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
-        📚 Learning Hub
+        {t('welcome')} 🌟
       </motion.h1>
 
-      {/* Progress Tracker */}
-      <div className="mb-12">
-        {lessons.map((lesson, idx) => {
-          const progress =
-            (Object.values(completed[idx]).filter(Boolean).length / 3) * 100;
-          return (
-            <div key={idx} className="mb-4">
-              <p className="font-semibold">{lesson.title}</p>
-              <div className="w-full bg-gray-300 h-3 rounded-full overflow-hidden">
-                <motion.div
-                  className="bg-green-400 h-3"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Lessons */}
-      <div className="space-y-12">
-        {lessons.map((lesson, idx) => (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {lessons.map((lesson) => (
           <motion.div
-            key={idx}
-            className="flex flex-col md:flex-row gap-6 items-start bg-black bg-opacity-30 p-6 rounded-xl shadow-xl"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            key={lesson.id}
+            className="bg-gradient-to-tr from-black via-gray-800 to-gray-900 rounded-3xl shadow-2xl p-5 flex flex-col justify-between transform transition duration-500 hover:scale-105 hover:rotate-1 hover:shadow-3xl"
+            whileHover={{ scale: 1.05, rotate: 0 }}
           >
             {/* Video */}
-            <div className="md:w-1/3 w-full rounded-xl overflow-hidden shadow-lg">
-              <iframe
-                width="100%"
-                height="200"
-                src={lesson.video}
-                title={lesson.title}
-                allowFullScreen
-                className="rounded-xl"
-                onLoad={() => handleComplete(idx, "video")}
-              ></iframe>
-              <p className="p-3 text-lg font-semibold">{lesson.title}</p>
-            </div>
+            <motion.iframe
+              src={lesson.video}
+              title={lesson.title}
+              width="100%"
+              height="200"
+              className="rounded-xl mb-4 shadow-lg border-2 border-yellow-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              allowFullScreen
+            ></motion.iframe>
 
-            {/* PDF */}
+            {/* Lesson Title */}
+            <h2 className="font-extrabold text-xl mb-2">{lesson.title}</h2>
+
+            {/* PDF Download */}
             <motion.a
               href={lesson.pdf}
               download
-              onClick={() => handleComplete(idx, "pdf")}
-              className={`md:w-1/3 w-full p-6 rounded-xl shadow-md flex items-center justify-center text-center font-semibold cursor-pointer transition ${
-                completed[idx].pdf
-                  ? "bg-yellow-500 text-black"
-                  : "bg-white text-black hover:bg-yellow-300"
-              }`}
+              className="bg-yellow-400 text-black font-bold text-center py-2 rounded-lg mb-3 shadow-md hover:bg-yellow-500 hover:scale-105 transition"
               whileHover={{ scale: 1.05 }}
             >
-              📘 {lesson.title} Notes
+              {t('download_pdf')}
             </motion.a>
 
-            {/* Game / Quiz */}
-            <motion.div
-              onClick={() => handleComplete(idx, "game")}
-              className={`md:w-1/3 w-full p-6 rounded-xl shadow-md flex items-center justify-center text-center font-semibold cursor-pointer transition ${
-                completed[idx].game
-                  ? "bg-green-600"
-                  : "bg-green-500 hover:bg-green-600"
-              }`}
-              whileHover={{ scale: 1.05, y: -3 }}
-            >
-              🎮 {lesson.game}
-            </motion.div>
+            {/* Mini Game Card */}
+            <MiniGameCard
+              title={lesson.game}
+              onStart={() => handleCompleteLesson(lesson.id, lesson.title)}
+            />
+
+            {/* Progress Bar */}
+            <ProgressBar progress={progress[lesson.id] || 0} />
           </motion.div>
         ))}
       </div>
