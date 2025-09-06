@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [synth, setSynth] = useState(null);
   const [isAudioStarted, setIsAudioStarted] = useState(false);
@@ -44,6 +44,27 @@ export default function Home() {
       }).then(() => setIsParticlesLoaded(true));
     };
     document.head.appendChild(script);
+
+    // Inject Botpress scripts for chatbot only once
+    if (!document.getElementById("botpress-inject")) {
+      const botpressScript = document.createElement("script");
+      botpressScript.src = "https://cdn.botpress.cloud/webchat/v3.2/inject.js";
+      botpressScript.defer = true;
+      botpressScript.id = "botpress-inject";
+      document.body.appendChild(botpressScript);
+    }
+    if (!document.getElementById("botpress-config")) {
+      const botpressConfigScript = document.createElement("script");
+      botpressConfigScript.src = "https://files.bpcontent.cloud/2025/09/05/17/20250905173043-QRDWD4YI.js";
+      botpressConfigScript.defer = true;
+      botpressConfigScript.id = "botpress-config";
+      document.body.appendChild(botpressConfigScript);
+    }
+
+    // Open chatbot if Botpress is loaded
+    if (window.botpressWebChat) {
+      window.botpressWebChat.open();
+    }
   }, []);
 
   // Play hover sound
@@ -80,6 +101,11 @@ export default function Home() {
     e.preventDefault();
     // Implement search functionality
     console.log('Searching for:', searchQuery);
+  };
+
+  // Language switcher handler
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
   };
 
   const gamifiedLearningFeatures = [
@@ -121,8 +147,12 @@ export default function Home() {
     { id: 5, text: "Best educational platform! 🌟", rating: 5 }
   ];
 
+  // Helper to replace underscores with spaces for visible text
+  const formatText = (text) => typeof text === "string" ? text.replace(/_/g, " ") : text;
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black text-white overflow-hidden font-sans" onClick={startAudio}>
+    
       <div id="tsparticles" className="absolute inset-0 z-0" style={{ opacity: isParticlesLoaded ? 1 : 0, transition: "opacity 1s" }}></div>
 
       {/* Search Bar */}
@@ -137,7 +167,7 @@ export default function Home() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('search_placeholder')}
+            placeholder={formatText(t('search_placeholder'))}
             className="w-full px-6 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300 pr-12"
           />
           <button
@@ -175,13 +205,13 @@ export default function Home() {
           whileHover={{ scale: 1.05, filter: "brightness(1.5)" }}
           onHoverStart={handleHoverStart}
         >
-          {t('home_title')}
+          {formatText("EduKhel")}
         </motion.h1>
 
         <motion.p className="mt-6 text-lg md:text-2xl text-gray-300 max-w-2xl"
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1 }}
         >
-          {t('home_subtitle')} 🎮✨
+          {formatText("Where Education meets Gaming 🎮✨")}
         </motion.p>
 
         <motion.div className="mt-10 flex flex-col sm:flex-row gap-6"
@@ -225,7 +255,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-4">
-              {t('gamified_learning')} 🚀
+              {formatText(t('gamified_learning'))} 🚀
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Experience the power of gamified learning with interactive videos, challenges, and rewards that make education addictive!
@@ -239,10 +269,9 @@ export default function Home() {
                 key={index}
                 className="relative bg-gradient-to-br from-purple-800 to-pink-800 rounded-3xl p-6 overflow-hidden"
                 whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
+                transition={{ duration: 0.3, delay: index * 0.2 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-500/20 to-purple-600/20 animate-pulse"></div>
                 <div className="relative z-10">
@@ -250,7 +279,7 @@ export default function Home() {
                     <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-full flex items-center justify-center text-2xl mr-4`}>
                       {feature.icon}
                     </div>
-                    <h3 className="text-xl font-bold text-white">{feature.title}</h3>
+                    <h3 className="text-xl font-bold text-white">{formatText(feature.title)}</h3>
                   </div>
                   
                   {/* Video Element */}
@@ -295,7 +324,7 @@ export default function Home() {
                 <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-full flex items-center justify-center text-2xl mb-4 mx-auto`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 text-center">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-white mb-3 text-center">{formatText(feature.title)}</h3>
                 <p className="text-gray-300 text-sm text-center">{feature.description}</p>
               </motion.div>
             ))}
@@ -321,7 +350,7 @@ export default function Home() {
             whileHover={{ scale: 1.05 }}
             onMouseEnter={playSound}
           >
-            <h3 className="text-xl font-bold mb-2">{i===0 ? `📘 ${t('learn_smarter')}` : i===1 ? `🎮 ${t('play_harder')}` : `🏆 ${t('compete_win')}`}</h3>
+            <h3 className="text-xl font-bold mb-2">{i===0 ? `📘 ${formatText(t('learn_smarter'))}` : i===1 ? `🎮 ${formatText(t('play_harder'))}` : `🏆 ${formatText(t('compete_win'))}`}</h3>
             <p className="text-gray-300">
               {i===0 ? "Fun quizzes & challenges that make learning addictive."
               : i===1 ? "Interactive games that boost your knowledge & skills."
@@ -350,7 +379,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-4">
-              {t('feedback_title')} 💬
+              {formatText(t('feedback_title'))} 💬
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Join thousands of satisfied learners who have transformed their education journey with EduKhel
@@ -374,7 +403,7 @@ export default function Home() {
                     <span key={i} className={`text-xl ${i < feedback.rating ? 'text-yellow-400' : 'text-gray-600'}`}>⭐</span>
                   ))}
                 </div>
-                <p className="text-gray-300 mb-4">{feedback.text}</p>
+                <p className="text-gray-300 mb-4">{formatText(feedback.text)}</p>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
                     {String.fromCharCode(65 + index)}
@@ -401,7 +430,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowFeedback(true)}
             >
-{t('share_feedback')} 🌟
+              {formatText(t('share_feedback'))} 🌟
             </motion.button>
           </motion.div>
         </div>
@@ -445,6 +474,9 @@ export default function Home() {
           </motion.div>
         </motion.div>
       )}
+
+      {/* REMOVE custom chatbot button and modal */}
+      {/* The Botpress widget will appear automatically */}
     </div>
   );
 }

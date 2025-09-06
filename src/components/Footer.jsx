@@ -11,7 +11,7 @@ function Footer() {
         </svg>
       ),
       color: "from-pink-500 to-purple-600",
-      href: "#"
+      href: "https://www.instagram.com/edu_khel/"
     },
     {
       name: "Facebook",
