@@ -104,8 +104,39 @@ const LearningTopicPage = ({ topic, onGoBack }) => {
           <h1 className="font-extrabold text-4xl md:text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">{topic.title}</h1>
           <p className="text-gray-300 text-lg mb-8">{topic.description}</p>
           <div className="p-8 bg-gray-700 bg-opacity-50 rounded-xl w-full">
-            <h2 className="text-2xl font-bold mb-4">The learning adventure starts here!</h2>
-            <p className="text-gray-400">This is where quizzes, puzzles, and interactive lessons will teach you about this subject.</p>
+            <h2 className="text-2xl font-bold mb-4">Watch & Learn! 📺</h2>
+            <p className="text-gray-400 mb-6">Start your learning journey with this educational video:</p>
+            
+            {topic.videoUrl && (
+              <div className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden mb-6">
+                <iframe
+                  src={`https://www.youtube.com/embed/${topic.videoUrl.split('v=')[1]?.split('&')[0]}`}
+                  title={topic.title}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
+            
+            <div className="flex gap-4">
+              <motion.button
+                className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => window.open(topic.videoUrl, '_blank')}
+              >
+                Watch on YouTube 🎬
+              </motion.button>
+              <motion.button
+                className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Take Quiz 📝
+              </motion.button>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -195,66 +226,75 @@ export default function LearningHub({ onGoHome }) {
   const topics = [
     {
       id: 1,
-      title: "Algebraic Adventures",
+      title: "Introduction to Algebra for Kids",
       description: "An exciting journey to solve equations and complex problems.",
       image: "https://placehold.co/400x250/5D3FD3/ffffff?text=Math+Adventure",
       subject: "Math",
+      videoUrl: "https://www.youtube.com/watch?v=z0OIXIZKfo0"
     },
     {
       id: 2,
+      title: "EQUATIONS for Kids – Solving Equations with Addition and Subtraction",
+      description: "Learn to solve equations step by step with fun examples.",
+      image: "https://placehold.co/400x250/2E8B57/ffffff?text=Math+Equations",
+      subject: "Math",
+      videoUrl: "https://www.youtube.com/watch?v=dtnvT4CtJAc"
+    },
+    {
+      id: 3,
+      title: "What Is Universe? | Size Of The Universe | The Dr Binocs Show",
+      description: "Explore the mysteries of our vast universe and its incredible size.",
+      image: "https://placehold.co/400x250/1C004F/ffffff?text=Universe+Exploration",
+      subject: "Science",
+      videoUrl: "https://www.youtube.com/watch?v=Vw_TBtAf1Bc"
+    },
+    {
+      id: 4,
       title: "Science Mysteries",
       description: "Combine elements to create new compounds and unravel the mysteries of science.",
       image: "https://placehold.co/400x250/2E8B57/ffffff?text=Science+Mystery",
       subject: "Science",
+      videoUrl: "https://www.youtube.com/watch?v=zJEuHStX_8E"
     },
     {
-      id: 3,
+      id: 5,
       title: "History Hunt",
       description: "An exciting quiz battle to learn about historical events and figures.",
       image: "https://placehold.co/400x250/8B4513/ffffff?text=History+Hunt",
       subject: "History",
-    },
-    {
-      id: 4,
-      title: "Grammar World",
-      description: "Travel through space, correct grammar errors, and build perfect sentences.",
-      image: "https://placehold.co/400x250/FF6347/ffffff?text=Grammar+World",
-      subject: "Hindi Grammar",
-    },
-    {
-      id: 5,
-      title: "Coding Magic",
-      description: "Learn programming by solving logic puzzles and coding challenges.",
-      image: "https://placehold.co/400x250/4682B4/ffffff?text=Coding+Magic",
-      subject: "Computer Science",
+      videoUrl: "https://www.youtube.com/watch?v=N89JIkHyD6Q"
     },
     {
       id: 6,
+      title: "English Video",
+      description: "Master the art of communication with vocabulary and creative writing challenges.",
+      image: "https://placehold.co/400x250/FF8C00/ffffff?text=English+Learning",
+      subject: "English",
+      videoUrl: "https://www.youtube.com/watch?v=25lG5C7ygW4"
+    },
+    {
+      id: 7,
+      title: "Fundamentals of Computer",
+      description: "Learn the basics of computer science and how computers work.",
+      image: "https://placehold.co/400x250/4682B4/ffffff?text=Computer+Fundamentals",
+      subject: "Computer Science",
+      videoUrl: "https://www.youtube.com/watch?v=y34Xlt2RxEk&t=56s"
+    },
+    {
+      id: 8,
       title: "Physics Forcefield",
       description: "Apply principles of physics to solve mind-bending puzzles.",
       image: "https://placehold.co/400x250/FFD700/ffffff?text=Physics+Forcefield",
       subject: "Physics",
+      videoUrl: "https://www.youtube.com/watch?v=RWsvTUixZjI&t=489s"
     },
     {
-      id: 7,
+      id: 9,
       title: "Geography Exploration",
       description: "Explore world maps and become a geography master.",
       image: "https://placehold.co/400x250/33825D/ffffff?text=Geography+Exploration",
       subject: "World Geography",
-    },
-    {
-      id: 8,
-      title: "Cosmic Journey",
-      description: "Navigate the solar system and learn about our universe.",
-      image: "https://placehold.co/400x250/1C004F/ffffff?text=Cosmic+Journey",
-      subject: "Our Universe",
-    },
-    {
-      id: 9,
-      title: "Communication Skills",
-      description: "Master the art of communication with vocabulary and creative writing challenges.",
-      image: "https://placehold.co/400x250/FF8C00/ffffff?text=Communication+Skills",
-      subject: "Communication",
+      videoUrl: "https://www.youtube.com/watch?v=W0wTC7Toc3s&t=93s"
     },
   ];
 

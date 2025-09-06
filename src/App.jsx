@@ -24,7 +24,7 @@ function App() {
 
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "👋 Hi! I’m EduBot, your learning assistant. How can I help?" }
+    { sender: "bot", text: "👋 Hi! I’m EduBot, your learning assistant. How can I help?", time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
   ]);
   const [input, setInput] = useState("");
   const [hint, setHint] = useState("");
@@ -35,6 +35,25 @@ function App() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Load Botpress chatbot
+  useEffect(() => {
+    const script1 = document.createElement("script");
+    script1.src = "https://cdn.botpress.cloud/webchat/v3.2/inject.js";
+    script1.defer = true;
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement("script");
+    script2.src = "https://files.bpcontent.cloud/2025/09/05/17/20250905173043-QRDWD4YI.js";
+    script2.defer = true;
+    document.head.appendChild(script2);
+
+    return () => {
+      // Cleanup scripts if needed
+      document.head.removeChild(script1);
+      document.head.removeChild(script2);
+    };
+  }, []);
 
   // Page-specific hints
   useEffect(() => {
@@ -53,39 +72,77 @@ function App() {
     }
   }, [location.pathname]);
 
-  // Predefined responses
-  const getPredefinedReply = (msg) => {
+  // Predefined responses with context memory
+  const getPredefinedReply = (msg, history) => {
     const text = msg.toLowerCase();
-    if (text.includes("hi") || text.includes("hello") || text.includes("hey")) return "Hello there! Welcome to EduKhel. How can I assist you?";
-    if (text.includes("game") || text.includes("play")) return "We have a variety of educational games! Math, Science, History – which interests you?";
-    if (text.includes("math")) return "Math games like 'Math Quest' or 'Fraction Frenzy' are ready for you. Which one sounds fun?";
-    if (text.includes("science")) return "Science games like 'Planet Puzzle' or 'Chemistry Chaos' await. Explore and learn!";
-    if (text.includes("history")) return "History games like 'Time Traveler's Trials' take you to ancient civilizations. Which era do you like?";
-    if (text.includes("course") || text.includes("subject") || text.includes("learn")) return "Our courses make learning fun! Which subject do you want to explore?";
-    if (text.includes("price") || text.includes("cost") || text.includes("pricing") || text.includes("subscription")) return "Check our pricing page for flexible plans, including a free trial!";
-    if (text.includes("account") || text.includes("login") || text.includes("password")) return "Need account help? Visit the 'Help' section for password or account issues.";
-    if (text.includes("forgot password")) return "Click 'Forgot Password' on login page. We'll send a reset link to your email.";
-    if (text.includes("contact") || text.includes("talk to someone")) return "Reach support via support@edukhel.com. We're here to help!";
-    if (text.includes("how it works") || text.includes("how to use")) return "Sign up, pick a game or course, and start learning! Simple!";
-    if (text.includes("thank")) return "You're welcome! Anything else I can help with?";
-    if (text.includes("bye") || text.includes("goodbye")) return "Goodbye! Enjoy EduKhel. See you soon!";
-    return "I'm sorry, I can only answer basic queries about games, courses, pricing, or help.";
+
+    if (text.includes("hi") || text.includes("hello") || text.includes("hey")) 
+      return "Hello there! 👋 Welcome to EduKhel. How can I assist you today?";
+
+    if (text.includes("game") || text.includes("play")) 
+      return "🎮 We have Math, Science, and History games! Which subject excites you?";
+
+    if (text.includes("math")) 
+      return "🧮 Math Quest & Fraction Frenzy are fun! Want me to take you there?";
+
+    if (text.includes("science")) 
+      return "🔬 Try Planet Puzzle or Chemistry Chaos! 🚀 Which one sounds exciting?";
+
+    if (text.includes("history")) 
+      return "📜 Time Traveler's Trials will take you to ancient civilizations. 🌍";
+
+    if (text.includes("course") || text.includes("subject") || text.includes("learn")) 
+      return "📘 We make learning fun! Tell me the subject and I’ll suggest activities.";
+
+    if (text.includes("price") || text.includes("cost") || text.includes("subscription")) 
+      return "💰 Our pricing is flexible! Free trial available too. Want to see plans?";
+
+    if (text.includes("account") || text.includes("login") || text.includes("password")) 
+      return "🔐 Need account help? Check 'Help' section or reset password via email.";
+
+    if (text.includes("forgot password")) 
+      return "➡️ Click 'Forgot Password' on login page. We'll email you a reset link.";
+
+    if (text.includes("contact") || text.includes("support")) 
+      return "📩 Reach us at support@edukhel.com. We're always here to help!";
+
+    if (text.includes("how it works") || text.includes("how to use")) 
+      return "⚡ Simple! Sign up → pick a game/course → start learning! 🚀";
+
+    if (text.includes("thank")) 
+      return "🙏 You’re welcome! Anything else I can help you with?";
+
+    if (text.includes("bye") || text.includes("goodbye")) 
+      return "👋 Goodbye! Keep learning with EduKhel. See you soon!";
+
+    // Contextual memory: last 5 messages check
+    if (history.some(h => h.text.includes("math"))) 
+      return "Looks like you’re into Math! Should I open Math Quest for you?";
+    
+    if (history.some(h => h.text.includes("science"))) 
+      return "Science is fun! 🚀 Let’s try Chemistry Chaos today.";
+
+    return "🤔 Hmm… I can only answer about games, courses, pricing, or help right now.";
   };
 
   // Send message
   const handleSend = () => {
     if (!input.trim()) return;
-    const userMsg = { sender: "user", text: input };
+    const userMsg = { sender: "user", text: input, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
     setTimeout(() => {
-      const reply = getPredefinedReply(input);
-      setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
+      const history = messages.slice(-5); // last 5 msgs for context
+      const reply = getPredefinedReply(input, history);
+      setMessages((prev) => [...prev, { sender: "bot", text: reply, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }]);
       setLoading(false);
-    }, 800);
+    }, 1000);
   };
+
+  // Quick Suggestions
+  const suggestions = ["🎮 Games", "📘 Learning", "💰 Pricing", "🔐 Account Help"];
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black text-white">
@@ -99,7 +156,7 @@ function App() {
         <LanguageSwitcher />
       </motion.div>
 
-      {/* Floating Chatbot */}
+      {/* Botpress Chatbot Integration */}
       <div className="fixed bottom-6 right-6 z-50">
         <motion.div
           animate={{ scale: [1, 1.1, 1], boxShadow: ["0 0 15px rgba(236,72,153,0.6)", "0 0 25px rgba(168,85,247,0.9)", "0 0 15px rgba(236,72,153,0.6)"] }}
@@ -109,57 +166,6 @@ function App() {
         >
           <span className="text-2xl">🤖</span>
         </motion.div>
-
-        <AnimatePresence>
-          {chatOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              transition={{ duration: 0.4 }}
-              className="absolute bottom-16 right-0 w-80 h-96 bg-gray-900/95 rounded-2xl shadow-2xl p-4 border border-purple-700 backdrop-blur-lg flex flex-col"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold text-lg text-pink-400">EduBot AI</h3>
-                <button onClick={() => setChatOpen(false)} className="text-gray-300 hover:text-pink-400">✖</button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto mb-2 space-y-2 flex flex-col-reverse" style={{ direction: 'rtl' }}>
-                <div ref={messagesEndRef} />
-                {messages.slice().reverse().map((msg, i) => (
-                  <div
-                    key={i}
-                    className={`p-2 rounded-lg text-sm max-w-[75%] ${msg.sender === "bot" ? "bg-purple-700 text-white self-start" : "bg-pink-600 text-white self-end ml-auto"}`}
-                    style={{ direction: 'ltr' }}
-                  >
-                    {msg.text}
-                  </div>
-                ))}
-                {loading && <p className="text-gray-400 text-xs animate-pulse">EduBot is typing...</p>}
-              </div>
-
-              {hint && <div className="px-3 pb-2 text-xs text-pink-300">{hint}</div>}
-
-              <div className="flex gap-2 px-3 pb-2">
-                <button className="flex-1 bg-indigo-600 hover:bg-indigo-500 rounded-lg px-2 py-1 text-xs" onClick={() => navigate("/learning")}>📘 Learning</button>
-                <button className="flex-1 bg-green-600 hover:bg-green-500 rounded-lg px-2 py-1 text-xs" onClick={() => navigate("/gamehub")}>🎮 Games</button>
-                <button className="flex-1 bg-pink-600 hover:bg-pink-500 rounded-lg px-2 py-1 text-xs" onClick={() => navigate("/dashboard")}>📊 Progress</button>
-              </div>
-
-              <div className="flex items-center border-t border-purple-700 p-2">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  className="flex-1 bg-transparent outline-none text-white text-sm px-2"
-                  placeholder="Type a message..."
-                />
-                <button onClick={handleSend} className="text-pink-400 hover:text-pink-300 text-lg px-2">➤</button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* Main Routes */}
