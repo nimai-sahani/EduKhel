@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import * as Tone from 'tone';
+import AlgebraQuiz from "../components/quizzes/AlgebraQuiz";
+import ScienceQuiz from "../components/quizzes/ScienceQuiz";
 
 // Mock component for gamified header
 const GamifiedHeader = () => (
@@ -32,6 +34,7 @@ const LearningTopicPage = ({ topic, onGoBack }) => {
   const [isParticlesLoaded, setIsParticlesLoaded] = useState(false);
   const [synth, setSynth] = useState(null);
   const [isAudioStarted, setIsAudioStarted] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   useEffect(() => {
     const newSynth = new Tone.Synth({
@@ -77,6 +80,55 @@ const LearningTopicPage = ({ topic, onGoBack }) => {
       }
     }
   };
+
+  const renderQuiz = () => {
+    switch (topic.subject) {
+      case "Math":
+        return <AlgebraQuiz onComplete={() => setShowQuiz(false)} />;
+      case "Science":
+        return <ScienceQuiz onComplete={() => setShowQuiz(false)} />;
+      default:
+        return (
+          <div className="text-center p-8">
+            <h2 className="text-2xl font-bold mb-4">Quiz Coming Soon!</h2>
+            <p className="text-gray-400 mb-6">This quiz is under development.</p>
+            <motion.button
+              onClick={() => setShowQuiz(false)}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Back to Learning
+            </motion.button>
+          </div>
+        );
+    }
+  };
+
+  if (showQuiz) {
+    return (
+      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900 to-blue-900 text-white font-sans overflow-hidden" onClick={startAudio}>
+        <div id="tsparticles" className="absolute inset-0 z-0" style={{ opacity: isParticlesLoaded ? 1 : 0, transition: "opacity 1s" }}></div>
+        <div className="relative z-10 p-6 flex flex-col items-center justify-center min-h-screen">
+          <button
+            onClick={() => setShowQuiz(false)}
+            className="absolute top-8 left-8 px-4 py-2 bg-gray-800 bg-opacity-70 text-white rounded-full font-semibold z-30 transition-transform hover:scale-105"
+          >
+            &larr; Back to Topic
+          </button>
+
+          <motion.div
+            className="w-full max-w-6xl bg-gradient-to-tr from-gray-800 via-gray-900 to-black rounded-3xl shadow-2xl p-8 border border-gray-700/60"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            {renderQuiz()}
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900 to-blue-900 text-white font-sans overflow-hidden" onClick={startAudio}>
@@ -133,6 +185,7 @@ const LearningTopicPage = ({ topic, onGoBack }) => {
                 className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setShowQuiz(true)}
               >
                 Take Quiz 📝
               </motion.button>

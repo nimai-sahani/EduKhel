@@ -282,16 +282,31 @@ export default function Home() {
                     <h3 className="text-xl font-bold text-white">{formatText(feature.title)}</h3>
                   </div>
                   
-                  {/* Video Element */}
+                  {/* Video Element or Streamable Embed */}
                   <div className="relative mb-4 rounded-xl overflow-hidden">
-                    <video 
-                      className="w-full h-48 object-cover"
-                      controls
-                      poster={`/assets/poster-${index + 1}.jpg`}
-                    >
-                      <source src={feature.video} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
+                    {index === 0 ? (
+                      // Streamable embed for "what_is_gamified"
+                      <div style={{ position: "relative", width: "100%", height: 0, paddingBottom: "56.25%" }}>
+                        <iframe
+                          allow="fullscreen;autoplay"
+                          allowFullScreen
+                          height="100%"
+                          src="https://streamable.com/e/sk1ffb?autoplay=1&loop=0"
+                          width="100%"
+                          style={{ border: "none", width: "100%", height: "100%", position: "absolute", left: 0, top: 0, overflow: "hidden" }}
+                          title="Gamified Learning Video"
+                        ></iframe>
+                      </div>
+                    ) : (
+                      <video 
+                        className="w-full h-48 object-cover"
+                        controls
+                        poster={`/assets/poster-${index + 1}.jpg`}
+                      >
+                        <source src={feature.video} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                       <motion.div
                         className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl backdrop-blur-sm"
