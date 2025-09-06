@@ -13,7 +13,7 @@ const Navbar = ({ isLoggedIn, onLoginToggle, onLogout }) => {
             {/* Logo Section */}
             <div className="flex items-center space-x-2">
                 <img
-                    src="public/assets/EduKhel_Logo.jpg"
+                    src="/assets/EduKhel_Logo.jpg"
                     alt="EduKhel Logo"
                     className="w-10 h-10 rounded-full border-2 border-yellow-400"
                 />
