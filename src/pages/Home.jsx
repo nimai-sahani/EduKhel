@@ -110,32 +110,32 @@ export default function Home() {
 
   const gamifiedLearningFeatures = [
     {
-      title: t('what_is_gamified'),
+      title: t('What is Gamified Learning?'),
       description: "Gamified learning combines educational content with game mechanics like points, badges, levels, and rewards to make learning more engaging and motivating.",
       icon: "🎯",
       color: "from-blue-500 to-cyan-500",
       video: "/assets/gamifiedvdo1.mp4"
     },
     {
-      title: t('advantages'),
+      title: t('Advantages'),
       description: "Increases engagement by 90%, improves retention rates, provides instant feedback, and makes learning fun and addictive.",
       icon: "⚡",
       color: "from-yellow-500 to-orange-500",
-      video: "/assets/dummy.mp4"
+      video: "/assets/advantages.mp4"
     },
     {
-      title: t('uses'),
+      title: t('Uses'),
       description: "Perfect for K-12 education, corporate training, skill development, language learning, and professional certification programs.",
       icon: "🚀",
       color: "from-purple-500 to-pink-500",
-      video: "/assets/dummy.mp4"
+      video: "src/assets/uses.mp4"
     },
     {
-      title: t('effectiveness'),
+      title: t('Effectiveness'),
       description: "Studies show 67% better learning outcomes, 40% higher completion rates, and 3x more engagement compared to traditional methods.",
       icon: "🏆",
       color: "from-green-500 to-emerald-500",
-      video: "/assets/dummy.mp4"
+      video: "src/assets/effectiveness.mp4"
     }
   ];
 
@@ -285,7 +285,7 @@ export default function Home() {
                   {/* Video Element or Streamable Embed */}
                   <div className="relative mb-4 rounded-xl overflow-hidden">
                     {index === 0 ? (
-                      // Streamable embed for "what_is_gamified"
+                      // Streamable embed for "What is Gamified Learning?"
                       <div style={{ position: "relative", width: "100%", height: 0, paddingBottom: "56.25%" }}>
                         <iframe
                           allow="fullscreen;autoplay"
@@ -301,7 +301,7 @@ export default function Home() {
                       <video 
                         className="w-full h-48 object-cover"
                         controls
-                        poster={`/assets/poster-${index + 1}.jpg`}
+                        poster={`src/assets/gamifiedvdo1.mp4`}
                       >
                         <source src={feature.video} type="video/mp4" />
                         Your browser does not support the video tag.
