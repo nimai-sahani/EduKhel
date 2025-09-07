@@ -223,7 +223,7 @@ export default function Home() {
             whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px #f59e0b" }}
             className="px-6 py-3 bg-yellow-500 text-black rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300"
           >
-            {t('start_learning')} 📘
+            {t('Start Learning')} 📘
           </motion.button>
           <motion.button
             onClick={() => navigate('/gamehub')}
@@ -231,7 +231,7 @@ export default function Home() {
             whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px #8b5cf6" }}
             className="px-6 py-3 bg-purple-600 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300"
           >
-            {t('play_now')} 🎮
+            {t('Play Now')} 🎮
           </motion.button>
         </motion.div>
       </div>
@@ -255,7 +255,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-4">
-              {formatText(t('gamified_learning'))} 🚀
+              {formatText(t('Gamified Learning'))} 🚀
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Experience the power of gamified learning with interactive videos, challenges, and rewards that make education addictive!
@@ -355,7 +355,7 @@ export default function Home() {
           visible: { opacity: 1, y: 0, transition: { duration: 0.8, staggerChildren: 0.2 } },
         }}
       >
-        {[t('learn_smarter'), t('play_harder'), t('compete_win')].map((title, i) => (
+        {[t('Learn Smarter'), t('Play Harder'), t('Compete Win')].map((title, i) => (
           <motion.div
             key={i}
             className={`p-6 ${i===0 ? 'bg-purple-800' : i===1 ? 'bg-indigo-800' : 'bg-pink-800'} bg-opacity-50 rounded-2xl shadow-xl transition-transform duration-300 transform-gpu`}
@@ -445,7 +445,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowFeedback(true)}
             >
-              {formatText(t('share_feedback'))} 🌟
+              {formatText(t('Share Feedback'))} 🌟
             </motion.button>
           </motion.div>
         </div>
