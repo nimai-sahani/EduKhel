@@ -118,7 +118,7 @@ export default function Home() {
       description: "Perfect for K-12 education, corporate training, skill development, language learning, and professional certification programs.",
       icon: "🚀",
       color: "from-purple-500 to-pink-500",
-      video: "https://youtu.be/BAf5-VFzCKE"
+      video: "https://youtu.be/wgnIwWX_ZcE?si=AW_4pHXvJB3xREb5"
     },
     {
       title: "Proven Effectiveness",
