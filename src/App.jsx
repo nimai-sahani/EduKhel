@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
 import GameHub from "./pages/GameHub";
 import Quiz from "./pages/Quiz";
 import Puzzle from "./pages/Puzzle";
@@ -17,6 +18,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LearningHub from "./pages/LearningHub";
 import LanguageSwitcher from "./components/LanguageSwitcher";
+import OfflineIndicator from "./components/OfflineIndicator";
 
 function App() {
   const location = useLocation();
@@ -146,6 +148,9 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black text-white">
+      {/* Offline Indicator */}
+      <OfflineIndicator />
+      
       {/* Navbar */}
       <motion.div initial={{ y: -100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
         <Navbar />
@@ -176,6 +181,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
             <Route path="/learning" element={<LearningHub />} />
             <Route path="/gamehub" element={<GameHub />} />
             <Route path="/quiz" element={<Quiz />} />

@@ -1,12 +1,9 @@
-// Home.jsx
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import * as Tone from 'tone';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 export default function Home() {
-  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [synth, setSynth] = useState(null);
   const [isAudioStarted, setIsAudioStarted] = useState(false);
@@ -45,34 +42,32 @@ export default function Home() {
     };
     document.head.appendChild(script);
 
-    // Inject Botpress scripts for chatbot only once
-    if (!document.getElementById("botpress-inject")) {
-      const botpressScript = document.createElement("script");
-      botpressScript.src = "https://cdn.botpress.cloud/webchat/v3.2/inject.js";
-      botpressScript.defer = true;
-      botpressScript.id = "botpress-inject";
-      document.body.appendChild(botpressScript);
-    }
-    if (!document.getElementById("botpress-config")) {
-      const botpressConfigScript = document.createElement("script");
-      botpressConfigScript.src = "https://files.bpcontent.cloud/2025/09/05/17/20250905173043-QRDWD4YI.js";
-      botpressConfigScript.defer = true;
-      botpressConfigScript.id = "botpress-config";
-      document.body.appendChild(botpressConfigScript);
-    }
+    // --- Botpress Chatbot Integration ---
+    // Remove any existing botpress scripts to avoid duplicates
+    const existingInject = document.getElementById("botpress-inject");
+    if (existingInject) existingInject.remove();
 
-    // Open chatbot if Botpress is loaded
-    if (window.botpressWebChat) {
-      window.botpressWebChat.open();
-    }
+    // Inject Botpress inject.js
+    const botpressScript = document.createElement("script");
+    botpressScript.src = "https://cdn.botpress.cloud/webchat/v3.2/inject.js";
+    botpressScript.defer = true;
+    botpressScript.id = "botpress-inject";
+    document.body.appendChild(botpressScript);
+
+    botpressScript.onload = () => {
+      window.botpressWebChat.init({
+        configUrl: "https://files.bpcontent.cloud/2025/09/05/17/20250905173043-0LG6T3LS.json",
+        // You can add more options here if needed
+      });
+    };
   }, []);
 
-  // Play hover sound
+  // Play hover sound (hover sound chalao)
   const playSound = () => {
     if (synth && isAudioStarted) synth.triggerAttackRelease("C4", "8n");
   };
 
-  // Start audio context
+  // Start audio context (audio context shuru karo)
   const startAudio = async () => {
     if (!isAudioStarted) {
       await Tone.start();
@@ -80,7 +75,7 @@ export default function Home() {
     }
   };
 
-  // Track mouse for tilt effect
+  // Track mouse for tilt effect (tilt effect ke liye mouse ko track karo)
   useEffect(() => {
     const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", handleMouseMove);
@@ -99,43 +94,38 @@ export default function Home() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality
+    // Implement search functionality (search functionality laagu karo)
     console.log('Searching for:', searchQuery);
-  };
-
-  // Language switcher handler
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
   };
 
   const gamifiedLearningFeatures = [
     {
-      title: t('What is Gamified Learning?'),
+      title: "What is Gamified Learning?",
       description: "Gamified learning combines educational content with game mechanics like points, badges, levels, and rewards to make learning more engaging and motivating.",
       icon: "🎯",
       color: "from-blue-500 to-cyan-500",
-      video: "/assets/gamifiedvdo1.mp4"
+      video: "https://youtu.be/_bloPf5zrzA"
     },
     {
-      title: t('Advantages'),
+      title: "Advantages of Gamification",
       description: "Increases engagement by 90%, improves retention rates, provides instant feedback, and makes learning fun and addictive.",
       icon: "⚡",
       color: "from-yellow-500 to-orange-500",
-      video: "/assets/advantages.mp4"
+      video: "https://youtu.be/wgnIwWX_ZcE"
     },
     {
-      title: t('Uses'),
+      title: "Where is it used?",
       description: "Perfect for K-12 education, corporate training, skill development, language learning, and professional certification programs.",
       icon: "🚀",
       color: "from-purple-500 to-pink-500",
-      video: "src/assets/uses.mp4"
+      video: "https://youtu.be/BAf5-VFzCKE"
     },
     {
-      title: t('Effectiveness'),
+      title: "Proven Effectiveness",
       description: "Studies show 67% better learning outcomes, 40% higher completion rates, and 3x more engagement compared to traditional methods.",
       icon: "🏆",
       color: "from-green-500 to-emerald-500",
-      video: "src/assets/effectiveness.mp4"
+      video: "https://youtu.be/BAf5-VFzCKE"
     }
   ];
 
@@ -147,7 +137,7 @@ export default function Home() {
     { id: 5, text: "Best educational platform! 🌟", rating: 5 }
   ];
 
-  // Helper to replace underscores with spaces for visible text
+  // Helper to replace underscores with spaces for visible text (visible text ke liye underscores ko spaces se badalne mein madad karta hai)
   const formatText = (text) => typeof text === "string" ? text.replace(/_/g, " ") : text;
 
   return (
@@ -155,7 +145,7 @@ export default function Home() {
     
       <div id="tsparticles" className="absolute inset-0 z-0" style={{ opacity: isParticlesLoaded ? 1 : 0, transition: "opacity 1s" }}></div>
 
-      {/* Search Bar */}
+      {/* Search Bar (search bar) */}
       <motion.div 
         className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
         initial={{ opacity: 0, y: -20 }}
@@ -167,7 +157,7 @@ export default function Home() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={formatText(t('search_placeholder'))}
+            placeholder="Search for topics, games, or quizzes..."
             className="w-full px-6 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300 pr-12"
           />
           <button
@@ -181,7 +171,7 @@ export default function Home() {
         </form>
       </motion.div>
 
-      {/* Floating Elements */}
+      {/* Floating Elements (floating elements) */}
       <motion.div className="absolute top-1/4 right-1/4 z-10 hidden lg:block"
         animate={{ y: [0, -30, 0], rotate: [0, 5, -5, 0] }}
         transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
@@ -194,7 +184,7 @@ export default function Home() {
         </svg>
       </motion.div>
 
-      {/* Hero Section */}
+      {/* Hero Section (hero section) */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 py-16">
         <motion.h1
           key={glitchKey}
@@ -205,13 +195,13 @@ export default function Home() {
           whileHover={{ scale: 1.05, filter: "brightness(1.5)" }}
           onHoverStart={handleHoverStart}
         >
-          {formatText("EduKhel")}
+EduKhel
         </motion.h1>
 
         <motion.p className="mt-6 text-lg md:text-2xl text-gray-300 max-w-2xl"
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1 }}
         >
-          {formatText("Where Education meets Gaming 🎮✨")}
+Turn your education into an epic adventure.
         </motion.p>
 
         <motion.div className="mt-10 flex flex-col sm:flex-row gap-6"
@@ -223,7 +213,7 @@ export default function Home() {
             whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px #f59e0b" }}
             className="px-6 py-3 bg-yellow-500 text-black rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300"
           >
-            {t('Start Learning')} 📘
+Start Learning
           </motion.button>
           <motion.button
             onClick={() => navigate('/gamehub')}
@@ -231,12 +221,12 @@ export default function Home() {
             whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px #8b5cf6" }}
             className="px-6 py-3 bg-purple-600 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300"
           >
-            {t('Play Now')} 🎮
+Play Now
           </motion.button>
         </motion.div>
       </div>
 
-      {/* Gamified Learning Intro Video Section */}
+      {/* Gamified Learning Intro Video Section (gamified learning intro video section) */}
       <motion.section 
         className="relative z-10 py-20 px-4"
         initial="hidden"
@@ -255,14 +245,14 @@ export default function Home() {
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-4">
-              {formatText(t('Gamified Learning'))} 🚀
+Why Gamified Learning?
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Experience the power of gamified learning with interactive videos, challenges, and rewards that make education addictive!
+              Experience the power of fun and interactive education.
             </p>
           </motion.div>
 
-          {/* Video Section with Multiple Videos */}
+          {/* Video Section with Multiple Videos (multiple videos ke saath video section) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             {gamifiedLearningFeatures.map((feature, index) => (
               <motion.div 
@@ -279,43 +269,18 @@ export default function Home() {
                     <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-full flex items-center justify-center text-2xl mr-4`}>
                       {feature.icon}
                     </div>
-                    <h3 className="text-xl font-bold text-white">{formatText(feature.title)}</h3>
+                    <h3 className="text-xl font-bold text-white">{feature.title}</h3>
                   </div>
                   
-                  {/* Video Element or Streamable Embed */}
-                  <div className="relative mb-4 rounded-xl overflow-hidden">
-                    {index === 0 ? (
-                      // Streamable embed for "What is Gamified Learning?"
-                      <div style={{ position: "relative", width: "100%", height: 0, paddingBottom: "56.25%" }}>
-                        <iframe
-                          allow="fullscreen;autoplay"
-                          allowFullScreen
-                          height="100%"
-                          src="https://streamable.com/e/sk1ffb?autoplay=1&loop=0"
-                          width="100%"
-                          style={{ border: "none", width: "100%", height: "100%", position: "absolute", left: 0, top: 0, overflow: "hidden" }}
-                          title="Gamified Learning Video"
-                        ></iframe>
-                      </div>
-                    ) : (
-                      <video 
-                        className="w-full h-48 object-cover"
-                        controls
-                        poster={`src/assets/gamifiedvdo1.mp4`}
-                      >
-                        <source src={feature.video} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                      <motion.div
-                        className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl backdrop-blur-sm"
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        ▶️
-                      </motion.div>
-                    </div>
+                  {/* YouTube Embed (YouTube embed) */}
+                  <div className="relative mb-4 rounded-xl overflow-hidden" style={{ position: "relative", width: "100%", height: 0, paddingBottom: "56.25%" }}>
+                    <iframe
+                      src={feature.video.replace("youtu.be/", "www.youtube.com/embed/")}
+                      title={feature.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{ border: "none", width: "100%", height: "100%", position: "absolute", left: 0, top: 0, overflow: "hidden" }}
+                    ></iframe>
                   </div>
                   
                   <p className="text-gray-300 text-sm">{feature.description}</p>
@@ -324,7 +289,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Features Grid */}
+          {/* Features Grid (features grid) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {gamifiedLearningFeatures.map((feature, index) => (
               <motion.div
@@ -339,7 +304,7 @@ export default function Home() {
                 <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-full flex items-center justify-center text-2xl mb-4 mx-auto`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 text-center">{formatText(feature.title)}</h3>
+                <h3 className="text-xl font-bold text-white mb-3 text-center">{feature.title}</h3>
                 <p className="text-gray-300 text-sm text-center">{feature.description}</p>
               </motion.div>
             ))}
@@ -347,7 +312,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Enhanced Info Section */}
+      {/* Enhanced Info Section (enhanced info section) */}
       <motion.div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 p-10 mt-10"
         initial="hidden" whileInView="visible" viewport={{ once: true }}
         variants={{
@@ -355,7 +320,7 @@ export default function Home() {
           visible: { opacity: 1, y: 0, transition: { duration: 0.8, staggerChildren: 0.2 } },
         }}
       >
-        {[t('Learn Smarter'), t('Play Harder'), t('Compete Win')].map((title, i) => (
+        {["Learn Smarter", "Play Harder", "Compete & Win"].map((title, i) => (
           <motion.div
             key={i}
             className={`p-6 ${i===0 ? 'bg-purple-800' : i===1 ? 'bg-indigo-800' : 'bg-pink-800'} bg-opacity-50 rounded-2xl shadow-xl transition-transform duration-300 transform-gpu`}
@@ -365,17 +330,17 @@ export default function Home() {
             whileHover={{ scale: 1.05 }}
             onMouseEnter={playSound}
           >
-            <h3 className="text-xl font-bold mb-2">{i===0 ? `📘 ${formatText(t('learn_smarter'))}` : i===1 ? `🎮 ${formatText(t('play_harder'))}` : `🏆 ${formatText(t('compete_win'))}`}</h3>
+            <h3 className="text-xl font-bold mb-2">{i===0 ? `📘 ${title}` : i===1 ? `🎮 ${title}` : `🏆 ${title}`}</h3>
             <p className="text-gray-300">
-              {i===0 ? "Fun quizzes & challenges that make learning addictive."
-              : i===1 ? "Interactive games that boost your knowledge & skills."
-              : "Climb the leaderboard & earn rewards as you learn!"}
+              {i===0 ? "Engage with fun quizzes and challenging missions that make learning feel like a game."
+              : i===1 ? "Dive into interactive games designed to teach complex subjects in an enjoyable, hands-on way."
+              : "Track your progress, earn rewards, and climb the leaderboard to prove you're the best."}
             </p>
           </motion.div>
         ))}
       </motion.div>
 
-      {/* Feedback Section */}
+      {/* Feedback Section (feedback section) */}
       <motion.section 
         className="relative z-10 py-20 px-4"
         initial="hidden"
@@ -394,14 +359,14 @@ export default function Home() {
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-4">
-              {formatText(t('feedback_title'))} 💬
+What Our Learners Say
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Join thousands of satisfied learners who have transformed their education journey with EduKhel
+              Join thousands of students who have transformed their learning experience.
             </p>
           </motion.div>
 
-          {/* Feedback Cards */}
+          {/* Feedback Cards (feedback cards) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {feedbackOptions.map((feedback, index) => (
               <motion.div
@@ -418,7 +383,7 @@ export default function Home() {
                     <span key={i} className={`text-xl ${i < feedback.rating ? 'text-yellow-400' : 'text-gray-600'}`}>⭐</span>
                   ))}
                 </div>
-                <p className="text-gray-300 mb-4">{formatText(feedback.text)}</p>
+                <p className="text-gray-300 mb-4">{feedback.text}</p>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
                     {String.fromCharCode(65 + index)}
@@ -432,7 +397,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Call to Action */}
+          {/* Call to Action (call to action) */}
           <motion.div 
             className="text-center"
             initial={{ opacity: 0, y: 30 }}
@@ -445,13 +410,13 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowFeedback(true)}
             >
-              {formatText(t('Share Feedback'))} 🌟
+Share Your Feedback
             </motion.button>
           </motion.div>
         </div>
       </motion.section>
 
-      {/* Feedback Modal */}
+      {/* Feedback Modal (feedback modal) */}
       {showFeedback && (
         <motion.div 
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -490,8 +455,8 @@ export default function Home() {
         </motion.div>
       )}
 
-      {/* REMOVE custom chatbot button and modal */}
-      {/* The Botpress widget will appear automatically */}
+      {/* REMOVE custom chatbot button and modal (custom chatbot button aur modal hatayein) */}
+      {/* The Botpress widget will appear automatically (Botpress widget automatically dikhai dega) */}
     </div>
   );
 }

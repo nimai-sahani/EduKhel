@@ -11,8 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@botpress/webchat": "^3.2.4",
+    "@botpress/webchat": "^1.1.1",
     "axios": "^1.11.0",
+    "esbuild": "^0.25.9",
     "firebase": "^12.2.1",
     "framer-motion": "^12.23.12",
     "i18next": "^25.5.2",
@@ -25,6 +26,7 @@
     "react-i18next": "^15.7.3",
     "react-router-dom": "^7.8.2",
     "react-tsparticles": "^2.12.2",
+    "recharts": "^3.1.2",
     "tone": "^15.1.22",
     "tsparticles": "^3.9.1"
   },

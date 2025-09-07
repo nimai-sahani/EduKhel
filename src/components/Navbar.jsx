@@ -30,6 +30,9 @@ const Navbar = ({ isLoggedIn, onLoginToggle, onLogout }) => {
                 <Link to="/dashboard" className="text-gray-300 hover:text-white transition-colors">
                     Dashboard
                 </Link>
+                <Link to="/teacher-dashboard" className="text-gray-300 hover:text-white transition-colors">
+                    Teacher Dashboard
+                </Link>
 
                 {isLoggedIn ? (
                     <>

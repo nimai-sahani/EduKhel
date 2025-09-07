@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Trophy, Gamepad2, BookOpen } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Leaderboard from "./Leaderboard";
 
 function Dashboard() {
+  const { t } = useTranslation();
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white px-6 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white px-6 py-10 pt-20">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-extrabold text-center mb-10"
@@ -13,7 +15,7 @@ function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        🚀 EduKhel Dashboard
+        🚀 {t("dashboard")}
       </motion.h1>
 
       {/* Quick Links */}
@@ -23,13 +25,13 @@ function Dashboard() {
           className="bg-purple-800/60 p-6 rounded-2xl shadow-xl flex flex-col items-center"
         >
           <Gamepad2 size={40} className="mb-3 text-yellow-400" />
-          <h2 className="text-xl font-semibold mb-2">Game Hub</h2>
-          <p className="text-sm text-gray-300 mb-4">Play fun learning games.</p>
+          <h2 className="text-xl font-semibold mb-2">{t("game_hub")}</h2>
+          <p className="text-sm text-gray-300 mb-4">{t("interactive_games")}</p>
           <Link
             to="/gamehub"
             className="px-4 py-2 bg-yellow-400 text-black font-bold rounded-lg"
           >
-            Play Now
+            {t("play_now")}
           </Link>
         </motion.div>
 
@@ -38,13 +40,13 @@ function Dashboard() {
           className="bg-indigo-800/60 p-6 rounded-2xl shadow-xl flex flex-col items-center"
         >
           <BookOpen size={40} className="mb-3 text-green-400" />
-          <h2 className="text-xl font-semibold mb-2">Quiz</h2>
-          <p className="text-sm text-gray-300 mb-4">Test your knowledge.</p>
+          <h2 className="text-xl font-semibold mb-2">{t("quiz")}</h2>
+          <p className="text-sm text-gray-300 mb-4">{t("test_knowledge")}</p>
           <Link
             to="/quiz"
             className="px-4 py-2 bg-green-400 text-black font-bold rounded-lg"
           >
-            Start Quiz
+            {t("start_quiz")}
           </Link>
         </motion.div>
 
@@ -53,13 +55,13 @@ function Dashboard() {
           className="bg-pink-800/60 p-6 rounded-2xl shadow-xl flex flex-col items-center"
         >
           <Trophy size={40} className="mb-3 text-pink-300" />
-          <h2 className="text-xl font-semibold mb-2">Leaderboard</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("leaderboard")}</h2>
           <p className="text-sm text-gray-300 mb-4">
-            See top performers & ranks.
+            {t("see_performers")}
           </p>
           <a href="#leaderboard">
             <button className="px-4 py-2 bg-pink-400 text-black font-bold rounded-lg">
-              View Leaderboard
+              View {t("leaderboard")}
             </button>
           </a>
         </motion.div>
@@ -72,7 +74,7 @@ function Dashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          🏆 Top Players
+          🏆 {t("top_performers")}
         </motion.h2>
         <Leaderboard />
       </section>
